@@ -2,6 +2,7 @@ import { email } from "zod";
 import { prisma } from "../prisma/prisma";
 import { comparePassword, hashPassword } from "../utils/hash";
 import { generateToken } from "../utils/jwt";
+import { ApiError } from "../utils/api-error";
 
 interface RegisterInput {
     name: string;
@@ -24,7 +25,8 @@ class AuthService {
         });
 
         if (existingUser) {
-            throw new Error(
+            throw new ApiError(
+                409,
                 "Email already registered"
             );
         }
@@ -54,7 +56,8 @@ class AuthService {
         });
 
         if (!user) {
-            throw new Error(
+            throw new ApiError(
+                401,
                 "Invalid credentials"
             );
         }

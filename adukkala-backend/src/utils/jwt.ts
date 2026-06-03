@@ -11,5 +11,14 @@ export const generateToken = (
         {
             expiresIn: "7d"
         }
-    )
-}
+    );
+};
+
+export const verifyToken = (
+    token: string
+): jwt.JwtPayload => {
+    return jwt.verify(
+        token,
+        JWT_SECRET
+    ) as jwt.JwtPayload;
+};
