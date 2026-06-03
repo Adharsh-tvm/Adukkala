@@ -35,7 +35,7 @@ class AuthService {
             data: {
                 name: data.name,
                 email: data.email,
-                password: hashPassword
+                password: hashedPassword
             }
         });
 
