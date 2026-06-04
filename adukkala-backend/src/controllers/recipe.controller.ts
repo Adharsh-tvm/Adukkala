@@ -1,7 +1,8 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import { recipeService } from "../services/recipe.service";
+import { AuthRequest } from "../types/auth-request";
 
-export const searchRecipes = async (req: Request, res: Response, next: NextFunction) => {
+export const searchRecipes = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const query = String(req.query.query || "");
 
@@ -18,7 +19,7 @@ export const searchRecipes = async (req: Request, res: Response, next: NextFunct
     }
 }
 
-export const getRecipeDetails = async (req: Request, res: Response, next: NextFunction) => {
+export const getRecipeDetails = async (req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const recipeId =
             Number(req.params.id);

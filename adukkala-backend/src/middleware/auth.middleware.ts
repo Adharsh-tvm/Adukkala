@@ -1,5 +1,4 @@
 import {
-    Request,
     Response,
     NextFunction
 } from "express";
@@ -7,14 +6,14 @@ import {
 import { verifyToken } from "../utils/jwt";
 
 import { ApiError } from "../utils/api-error";
+import { AuthRequest } from "../types/auth-request";
 
 export const authenticate = (
-    req: Request,
+    req: AuthRequest,
     _res: Response,
     next: NextFunction
 ) => {
-    const authHeader =
-        req.headers.authorization;
+    const authHeader =  req.headers.authorization;
 
     if (!authHeader) {
         return next(
@@ -25,8 +24,7 @@ export const authenticate = (
         );
     }
 
-    const token =
-        authHeader.split(" ")[1];
+    const token = authHeader.split(" ")[1];
 
     if (!token) {
         return next(
@@ -38,11 +36,9 @@ export const authenticate = (
     }
 
     try {
-        const decoded =
-            verifyToken(token);
+        const decoded = verifyToken(token);
 
-        req.userId =
-            decoded.userId as string;
+        req.userId = decoded.userId as string;
 
         next();
     } catch {

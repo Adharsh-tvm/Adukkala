@@ -1,5 +1,4 @@
 import axios from "axios";
-import { number } from "zod";
 import { ApiError } from "../utils/api-error";
 
 const API_KEY = process.env.SPOONACULAR_API_KEY;

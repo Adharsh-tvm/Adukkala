@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { authService } from "../services/auth.service";
-import { success } from "zod";
+import { AuthRequest } from "../types/auth-request";
 
-export const register = async (req: Request, res: Response, next: NextFunction) => {
+export const register = async (req: AuthRequest, res: Response, next: NextFunction) => {
 
     try {
         const result = await authService.register(req.body);
@@ -16,7 +16,7 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
     }
 }
 
-export const login = async (req: Request, res: Response, next: NextFunction) => {
+export const login = async (req: AuthRequest, res: Response, next: NextFunction) => {
 
     try {
         const result = await authService.login(req.body);
