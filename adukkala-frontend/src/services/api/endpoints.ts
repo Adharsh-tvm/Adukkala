@@ -6,14 +6,12 @@ export const ENDPOINTS = {
 
     RECIPES: {
         SEARCH: "/recipes/search",
-        DETAILS: (id: number) =>
-            `/recipes/${id}`,
+        DETAILS: (id: number) => `/recipes/${id}`,
     },
 
     FAVORITES: {
         BASE: "/favorites",
 
-        DELETE: (recipeId: number) =>
-            `/favorites/${recipeId}`,
+        DELETE: (recipeId: number) => `/favorites/${recipeId}`,
     },
 } as const;
