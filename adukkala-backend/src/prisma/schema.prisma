@@ -32,4 +32,6 @@ model Favorite {
   user       User        @relation(fields: [userId], references: [id])
 
   createdAt  DateTime    @default(now())
+
+   @@unique([userId, recipeId])
 }
