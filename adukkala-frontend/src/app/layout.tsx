@@ -1,10 +1,25 @@
 import "./globals.css";
+
 import { ReactNode } from "react";
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+import AuthProvider from "@/providers/AuthProvider";
+
+import { isAuthenticated } from "@/lib/session";
+import { Toaster } from "sonner";
+
+export default async function RootLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const authenticated = await isAuthenticated();
+
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <AuthProvider isAuthenticated={authenticated}>{children}</AuthProvider>
+        <Toaster richColors />
+      </body>
     </html>
   );
 }
