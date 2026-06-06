@@ -9,8 +9,11 @@ export const recipeService = {
         page: number
     ) {
         const { data } = await api.get<{
-            results: Recipe[];
-            totalResults: number;
+            success: boolean;
+            data: {
+                recipes: Recipe[];
+                total: number;
+            };
         }>(
             ENDPOINTS.RECIPES.SEARCH,
             {
@@ -21,16 +24,19 @@ export const recipeService = {
             }
         );
 
-        return data;
+        return data.data;
     },
 
     async getRecipe(
         id: number
     ): Promise<RecipeDetail> {
-        const { data } = await api.get<RecipeDetail>(
+        const { data } = await api.get<{
+            success: boolean;
+            data: RecipeDetail;
+        }>(
             ENDPOINTS.RECIPES.DETAILS(id)
         );
 
-        return data;
+        return data.data;
     }
 }
