@@ -14,6 +14,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
+        {children}
         <Toaster richColors />
       </body>
     </html>

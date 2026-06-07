@@ -1,10 +1,15 @@
-import React from 'react'
+"use client"
+
+import React, { useEffect } from 'react'
 
 type Props = {}
 
 function page({}: Props) {
+
   return (
-    <div>page</div>
+    <div >
+      
+    </div>
   )
 }
 
