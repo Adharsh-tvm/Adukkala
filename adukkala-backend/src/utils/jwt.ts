@@ -9,7 +9,7 @@ export const generateToken = (
         { userId },
         JWT_SECRET,
         {
-            expiresIn: "7d"
+            expiresIn: process.env.MAX_TOKEN_AGE as jwt.SignOptions["expiresIn"]
         }
     );
 };

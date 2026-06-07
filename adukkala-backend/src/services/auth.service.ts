@@ -68,9 +68,10 @@ class AuthService {
         );
 
         if (!isMatch) {
-            throw new Error(
+            throw new ApiError(
+                401,
                 "Invalid credentials"
-            )
+            );
         }
 
         const token = generateToken(user.id);
