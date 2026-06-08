@@ -9,3 +9,14 @@ export const ROUTES = {
     RECIPE_DETAILS: (id: number) =>
         `/recipe/${id}`,
 } as const;
+
+export const PUBLIC_ROUTES = [
+    "/",
+    "/login",
+    "/signup",
+];
+
+export const AUTH_ROUTES = [
+    "/login",
+    "/signup",
+];
