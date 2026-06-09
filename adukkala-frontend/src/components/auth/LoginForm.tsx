@@ -56,6 +56,14 @@ export default function LoginForm() {
     }
   };
 
+  const onError = (formErrors: any) => {
+    Object.values(formErrors).forEach((err: any) => {
+      if (err?.message) {
+        toast.error(err.message);
+      }
+    });
+  };
+
   return (
     <div className="w-full flex flex-col gap-6 relative">
       {/* Decorative background glow */}
@@ -75,14 +83,13 @@ export default function LoginForm() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5 relative z-10">
+      <form onSubmit={handleSubmit(onSubmit, onError)} className="flex flex-col gap-5 relative z-10">
         <InputField
           label="Email Address"
           type="email"
           placeholder="chef@adukkala.com"
           icon={<Mail size={18} />}
           {...register("email")}
-          error={errors.email?.message}
         />
 
         <div className="flex flex-col gap-2">
@@ -91,7 +98,6 @@ export default function LoginForm() {
             placeholder="Enter your secret recipe"
             icon={<Lock size={18} />}
             {...register("password")}
-            error={errors.password?.message}
           />
           <div className="flex justify-end">
             <Link 

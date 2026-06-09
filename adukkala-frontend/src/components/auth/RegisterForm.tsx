@@ -25,7 +25,6 @@ type RegisterValues = z.infer<typeof registerSchema>;
 export default function RegisterForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [globalError, setGlobalError] = useState("");
 
   const {
     register,
@@ -42,7 +41,6 @@ export default function RegisterForm() {
 
   const onSubmit = async (data: RegisterValues) => {
     setIsSubmitting(true);
-    setGlobalError("");
     
     try {
       const response = await registerAction(data);
@@ -50,13 +48,21 @@ export default function RegisterForm() {
         toast.success("Account created! Let's start cooking!");
         router.push("/login");
       } else {
-        setGlobalError(response.message || "Failed to create account");
+        toast.error(response.message || "Failed to create account");
       }
     } catch (error: any) {
-      setGlobalError(error?.message || "An unexpected error occurred");
+      toast.error(error?.message || "An unexpected error occurred");
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const onError = (formErrors: any) => {
+    Object.values(formErrors).forEach((err: any) => {
+      if (err?.message) {
+        toast.error(err.message);
+      }
+    });
   };
 
   return (
@@ -78,21 +84,13 @@ export default function RegisterForm() {
         </p>
       </div>
 
-      {globalError && (
-        <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
-          {globalError}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5 relative z-10">
+      <form onSubmit={handleSubmit(onSubmit, onError)} className="flex flex-col gap-5 relative z-10">
         <InputField
           label="Full Name"
           type="text"
           placeholder="e.g. Gordon Ramsay"
           icon={<User size={18} />}
           {...register("name")}
-          error={errors.name?.message}
         />
 
         <InputField
@@ -101,7 +99,6 @@ export default function RegisterForm() {
           placeholder="chef@adukkala.com"
           icon={<Mail size={18} />}
           {...register("email")}
-          error={errors.email?.message}
         />
 
         <PasswordField
@@ -109,7 +106,6 @@ export default function RegisterForm() {
           placeholder="Create a strong password"
           icon={<Lock size={18} />}
           {...register("password")}
-          error={errors.password?.message}
         />
 
         <LoadingButton 
