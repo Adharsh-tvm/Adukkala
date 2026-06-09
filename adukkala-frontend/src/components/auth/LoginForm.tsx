@@ -72,7 +72,7 @@ export default function LoginForm() {
           <h3 className="text-2xl font-extrabold text-gray-900 tracking-tight">Ready to Cook?</h3>
           <Sparkles className="text-yellow-500 h-5 w-5 animate-pulse" />
         </div>
-        <p className="text-sm text-gray-500 font-medium text-center max-w-[250px]">
+        <p className="text-sm text-gray-500 font-medium text-center max-w-62.5">
           Login to access your favorite recipes and daily meal plans.
         </p>
       </div>

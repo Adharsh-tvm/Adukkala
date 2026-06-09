@@ -73,7 +73,7 @@ export default function RegisterForm() {
           <h3 className="text-2xl font-extrabold text-gray-900 tracking-tight">Join Adukkala</h3>
           <UtensilsCrossed className="text-orange-500 h-5 w-5" />
         </div>
-        <p className="text-sm text-gray-500 font-medium text-center max-w-[280px]">
+        <p className="text-sm text-gray-500 font-medium text-center max-w-80">
           Create your recipe book and discover a world of flavors.
         </p>
       </div>

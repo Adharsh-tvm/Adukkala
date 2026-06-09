@@ -41,7 +41,7 @@ export default function AuthLayout({
       </div>
 
       {/* Main Content Container */}
-      <div className="relative z-10 w-full max-w-[1100px] flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8 mt-16 lg:mt-0">
+      <div className="relative z-10 w-full max-w-275 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8 mt-16 lg:mt-0">
         
         {/* Left Side: Hero Text */}
         <div className="hidden lg:flex flex-col max-w-lg animate-fadeIn animation-delay-2000">
