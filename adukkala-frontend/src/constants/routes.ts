@@ -13,10 +13,10 @@ export const ROUTES = {
 export const PUBLIC_ROUTES = [
     "/",
     "/login",
-    "/signup",
+    "/register",
 ];
 
 export const AUTH_ROUTES = [
     "/login",
-    "/signup",
+    "/register",
 ];

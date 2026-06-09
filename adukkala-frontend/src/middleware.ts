@@ -14,7 +14,7 @@ export function middleware(
     //Public Route
     if (isPublicRoute) {
         if (token &&
-            (pathname === "/login" || pathname === "/signup")
+            (pathname === "/login" || pathname === "/register")
         ) {
             try {
                 verifyToken(token);
@@ -48,3 +48,9 @@ export function middleware(
         return response;
     }
 }
+
+export const config = {
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
+};

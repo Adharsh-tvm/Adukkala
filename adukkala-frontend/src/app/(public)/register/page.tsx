@@ -1,4 +1,5 @@
 import React from "react";
+import AuthLayout from "@/components/auth/AuthLayout";
 import RegisterForm from "@/components/auth/RegisterForm";
 
 export const metadata = {
@@ -8,5 +9,12 @@ export const metadata = {
 };
 
 export default function RegisterPage() {
-  return <RegisterForm />;
+  return (
+    <AuthLayout
+      title="Create an account"
+      subtitle="Join our community of food lovers and start saving your favorite recipes today."
+    >
+      <RegisterForm />
+    </AuthLayout>
+  );
 }

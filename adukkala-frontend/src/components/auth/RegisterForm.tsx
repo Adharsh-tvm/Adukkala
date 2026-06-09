@@ -3,218 +3,135 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
-import { z } from "zod";
+import { User, Mail, Lock, BookOpen, ArrowRight, UtensilsCrossed } from "lucide-react";
 
 import InputField from "@/components/ui/InputField";
 import PasswordField from "@/components/ui/PasswordField";
 import LoadingButton from "@/components/ui/LoadingButton";
+import { registerAction } from "@/actions/auth/register.action";
 
-// Schema for client-side form validation
-const registerFormSchema = z
-  .object({
-    name: z.string().min(2, "Name must be at least 2 characters"),
-    username: z
-      .string()
-      .min(3, "Username must be at least 3 characters")
-      .regex(/^[a-zA-Z0-9_]+$/, "Username can only contain letters, numbers, and underscores"),
-    email: z.string().email("Invalid email address"),
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters")
-      .regex(/[a-z]/, "Must contain at least one lowercase letter")
-      .regex(/[A-Z]/, "Must contain at least one uppercase letter")
-      .regex(/[0-9]/, "Must contain at least one number"),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
-    agreeTerms: z.boolean().refine((val) => val === true, {
-      message: "You must agree to the Terms & Conditions",
-    }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
+const registerSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
 
-type RegisterFormValues = z.infer<typeof registerFormSchema>;
+type RegisterValues = z.infer<typeof registerSchema>;
 
 export default function RegisterForm() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
-  const [passwordValue, setPasswordValue] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [globalError, setGlobalError] = useState("");
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerFormSchema),
+  } = useForm<RegisterValues>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "",
-      username: "",
       email: "",
       password: "",
-      confirmPassword: "",
-      agreeTerms: false,
     },
   });
 
-  // Calculate password strength score (0 to 4)
-  const getPasswordStrength = (pass: string) => {
-    if (!pass) return { score: 0, label: "", colorClass: "bg-gray-200" };
-    let score = 0;
-    if (pass.length >= 8) score++;
-    if (/[a-z]/.test(pass) && /[A-Z]/.test(pass)) score++;
-    if (/[0-9]/.test(pass)) score++;
-    if (/[^A-Za-z0-9]/.test(pass)) score++;
-
-    switch (score) {
-      case 0:
-      case 1:
-        return { score, label: "Weak", colorClass: "bg-red-500 w-1/4" };
-      case 2:
-      case 3:
-        return { score, label: "Medium", colorClass: "bg-yellow-500 w-2/4" };
-      case 4:
-        return { score, label: "Strong", colorClass: "bg-green-500 w-full" };
-      default:
-        return { score: 0, label: "", colorClass: "bg-gray-200" };
+  const onSubmit = async (data: RegisterValues) => {
+    setIsSubmitting(true);
+    setGlobalError("");
+    
+    try {
+      const response = await registerAction(data);
+      if (response.success) {
+        toast.success("Account created! Let's start cooking!");
+        router.push("/login");
+      } else {
+        setGlobalError(response.message || "Failed to create account");
+      }
+    } catch (error: any) {
+      setGlobalError(error?.message || "An unexpected error occurred");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const strength = getPasswordStrength(passwordValue);
-
-
-
   return (
-    <div className="flex flex-col gap-6">
-      {/* Header Info */}
-      <div className="flex flex-col gap-1.5">
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-          Create Account
-        </h1>
-        <p className="text-sm text-gray-500 font-medium">
-          Join Adukkala to discover, cook, and save recipes.
+    <div className="w-full flex flex-col gap-6 relative">
+      {/* Decorative background glow */}
+      <div className="absolute -top-10 -right-10 w-32 h-32 bg-orange-200 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob pointer-events-none"></div>
+      <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-green-200 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob animation-delay-4000 pointer-events-none"></div>
+
+      <div className="flex flex-col items-center justify-center space-y-1 mb-2 relative z-10">
+        <div className="h-14 w-14 bg-linear-to-tr from-green-100 to-green-50 rounded-2xl flex items-center justify-center text-green-600 mb-3 shadow-inner border border-green-200/50 transform -rotate-3 hover:rotate-0 transition-all duration-300">
+          <BookOpen size={28} strokeWidth={1.5} />
+        </div>
+        <div className="flex items-center gap-2">
+          <h3 className="text-2xl font-extrabold text-gray-900 tracking-tight">Join Adukkala</h3>
+          <UtensilsCrossed className="text-orange-500 h-5 w-5" />
+        </div>
+        <p className="text-sm text-gray-500 font-medium text-center max-w-[280px]">
+          Create your recipe book and discover a world of flavors.
         </p>
       </div>
 
-      <form  className="flex flex-col gap-4">
-        {/* Full Name */}
+      {globalError && (
+        <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium flex items-center gap-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+          {globalError}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5 relative z-10">
         <InputField
           label="Full Name"
           type="text"
-          placeholder="John Doe"
-          error={errors.name?.message}
-          disabled={isLoading}
+          placeholder="e.g. Gordon Ramsay"
+          icon={<User size={18} />}
           {...register("name")}
+          error={errors.name?.message}
         />
 
-        {/* Username */}
-        <InputField
-          label="Username"
-          type="text"
-          placeholder="johndoe"
-          error={errors.username?.message}
-          disabled={isLoading}
-          {...register("username")}
-        />
-
-        {/* Email Address */}
         <InputField
           label="Email Address"
           type="email"
-          placeholder="you@example.com"
-          error={errors.email?.message}
-          disabled={isLoading}
+          placeholder="chef@adukkala.com"
+          icon={<Mail size={18} />}
           {...register("email")}
+          error={errors.email?.message}
         />
 
-        {/* Password */}
-        <div className="flex flex-col gap-1.5">
-          <PasswordField
-            label="Password"
-            placeholder="••••••••"
-            error={errors.password?.message}
-            disabled={isLoading}
-            {...register("password", {
-              onChange: (e) => setPasswordValue(e.target.value),
-            })}
-          />
-          {/* Password strength indicator */}
-          {passwordValue && (
-            <div className="flex flex-col gap-1 mt-0.5">
-              <div className="flex items-center justify-between text-xs font-semibold text-gray-500">
-                <span>Password Strength:</span>
-                <span
-                  className={
-                    strength.score <= 1
-                      ? "text-red-500"
-                      : strength.score <= 3
-                      ? "text-yellow-600"
-                      : "text-green-600"
-                  }
-                >
-                  {strength.label}
-                </span>
-              </div>
-              <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
-                <div
-                  className={`h-full transition-all duration-300 rounded-full ${strength.colorClass}`}
-                />
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Confirm Password */}
         <PasswordField
-          label="Confirm Password"
-          placeholder="••••••••"
-          error={errors.confirmPassword?.message}
-          disabled={isLoading}
-          {...register("confirmPassword")}
+          label="Password"
+          placeholder="Create a strong password"
+          icon={<Lock size={18} />}
+          {...register("password")}
+          error={errors.password?.message}
         />
 
-        {/* Terms and Conditions Checkbox */}
-        <div className="flex flex-col gap-1">
-          <label className="flex items-start gap-2.5 cursor-pointer text-gray-600 hover:text-gray-900 transition-colors text-sm font-medium select-none">
-            <input
-              type="checkbox"
-              disabled={isLoading}
-              className="mt-0.5 h-4 w-4 rounded-sm border-gray-300 text-primary focus:ring-primary/20 accent-primary cursor-pointer transition-colors"
-              {...register("agreeTerms")}
-            />
-            <span>
-              I agree to the{" "}
-              <a href="#" className="text-primary hover:text-primary-hover font-semibold transition-colors">
-                Terms & Conditions
-              </a>
-            </span>
-          </label>
-          {errors.agreeTerms && (
-            <p role="alert" className="text-xs font-medium text-red-500 mt-0.5">
-              {errors.agreeTerms.message}
-            </p>
-          )}
-        </div>
-
-        {/* Submit button */}
-        <div className="mt-2">
-          <LoadingButton isLoading={isLoading} loadingText="Creating Account...">
+        <LoadingButton 
+          type="submit" 
+          isLoading={isSubmitting} 
+          loadingText="Preparing your kitchen..."
+          className="mt-4 group"
+        >
+          <span className="flex items-center gap-2">
             Create Account
-          </LoadingButton>
-        </div>
+            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+          </span>
+        </LoadingButton>
       </form>
 
-      {/* Footer link */}
-      <div className="text-center text-sm font-medium text-gray-500">
-        Already have an account?{" "}
-        <Link
-          href="/login"
-          className="font-bold text-primary hover:text-primary-hover transition-colors focus:outline-hidden focus:underline"
+      <div className="text-center text-sm font-medium text-gray-500 mt-2">
+        Already have a kitchen?{" "}
+        <Link 
+          href="/login" 
+          className="text-primary hover:text-primary-hover transition-colors font-bold"
         >
-          Login
+          Sign in here
         </Link>
       </div>
     </div>
