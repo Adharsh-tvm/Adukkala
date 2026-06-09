@@ -24,7 +24,6 @@ type LoginValues = z.infer<typeof loginSchema>;
 export default function LoginForm() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [globalError, setGlobalError] = useState("");
 
   const {
     register,
@@ -40,7 +39,6 @@ export default function LoginForm() {
 
   const onSubmit = async (data: LoginValues) => {
     setIsSubmitting(true);
-    setGlobalError("");
     
     try {
       const response = await loginAction(data);
@@ -49,10 +47,10 @@ export default function LoginForm() {
         router.push("/");
         router.refresh();
       } else {
-        setGlobalError(response.message || "Invalid email or password");
+        toast.error(response.message || "Invalid email or password");
       }
     } catch (error: any) {
-      setGlobalError(error?.message || "An unexpected error occurred");
+      toast.error(error?.message || "An unexpected error occurred");
     } finally {
       setIsSubmitting(false);
     }
@@ -76,13 +74,6 @@ export default function LoginForm() {
           Login to access your favorite recipes and daily meal plans.
         </p>
       </div>
-
-      {globalError && (
-        <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm font-medium flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
-          {globalError}
-        </div>
-      )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5 relative z-10">
         <InputField

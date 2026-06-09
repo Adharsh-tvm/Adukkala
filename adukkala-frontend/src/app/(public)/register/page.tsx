@@ -11,7 +11,7 @@ export const metadata = {
 export default function RegisterPage() {
   return (
     <AuthLayout
-      title="Create an account"
+      title="Create an Account"
       subtitle="Join our community of food lovers and start saving your favorite recipes today."
     >
       <RegisterForm />
