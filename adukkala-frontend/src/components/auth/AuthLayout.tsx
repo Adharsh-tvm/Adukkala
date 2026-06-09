@@ -15,7 +15,7 @@ export default function AuthLayout({
   return (
     <div className="min-h-screen w-full flex bg-gray-50/50">
       {/* Left Panel - Hero/Branding (Desktop Only) */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-orange-50 to-orange-100/50 p-12 flex-col justify-between relative overflow-hidden border-r border-orange-100/30 select-none">
+      <div className="hidden lg:flex lg:w-1/2 from-orange-50 to-orange-100/50 p-12 flex-col justify-between relative overflow-hidden border-r border-orange-100/30 select-none">
         {/* Abstract Grid Pattern Background */}
         <div className="absolute inset-0 opacity-[0.08] pointer-events-none">
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">

@@ -1,4 +1,4 @@
-"use-server";
+"use server";
 
 import { setAccessToken } from "@/lib/auth/cookies";
 import { authService } from "@/services/auth.service";

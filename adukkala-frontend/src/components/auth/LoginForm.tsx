@@ -4,9 +4,39 @@ import Link from "next/link";
 import InputField from "@/components/ui/InputField";
 import PasswordField from "@/components/ui/PasswordField";
 import LoadingButton from "@/components/ui/LoadingButton";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { loginAction } from "@/actions/auth/login.action";
 
 export default function LoginForm() {
- 
+  const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+
+      const response = await loginAction({
+        email,
+        password,
+      });
+
+      if (response.success) {
+        router.replace("/user");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6">
       {/* Header Info */}
@@ -19,18 +49,22 @@ export default function LoginForm() {
         </p>
       </div>
 
-      <form  className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* Email Address */}
         <InputField
           label="Email Address"
           type="email"
           placeholder="you@example.com"
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         {/* Password */}
         <PasswordField
+          type="password"
           label="Password"
+          value={password}
           placeholder="••••••••"
+          onChange={(e) => setPassword(e.target.value)}
         />
 
         {/* Remember Me and Forgot Password */}
@@ -53,7 +87,11 @@ export default function LoginForm() {
 
         {/* Action Buttons */}
         <div className="flex flex-col gap-3 mt-2">
-          <LoadingButton loadingText="Signing In...">
+          <LoadingButton
+            type="submit"
+            disabled={loading}
+            loadingText="Signing In..."
+          >
             Login
           </LoadingButton>
 
