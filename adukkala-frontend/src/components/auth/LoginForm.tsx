@@ -44,7 +44,7 @@ export default function LoginForm() {
       const response = await loginAction(data);
       if (response.success) {
         toast.success("Welcome back Chef!");
-        router.push("/");
+        router.push("/user");
         router.refresh();
       } else {
         toast.error(response.message || "Invalid email or password");
@@ -65,25 +65,25 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="w-full flex flex-col gap-6 relative">
+    <div className="w-full flex flex-col gap-4 relative">
       {/* Decorative background glow */}
       <div className="absolute -top-10 -left-10 w-32 h-32 bg-orange-200 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob pointer-events-none"></div>
       <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-yellow-200 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob animation-delay-2000 pointer-events-none"></div>
 
-      <div className="flex flex-col items-center justify-center space-y-1 mb-2 relative z-10">
-        <div className="h-14 w-14 bg-linear-to-tr from-orange-100 to-orange-50 rounded-2xl flex items-center justify-center text-primary mb-3 shadow-inner border border-orange-200/50 transform rotate-3 hover:rotate-0 transition-all duration-300">
-          <ChefHat size={28} strokeWidth={1.5} />
+      <div className="flex flex-col items-center justify-center space-y-1 mb-1 relative z-10">
+        <div className="h-10 w-10 bg-linear-to-tr from-orange-100 to-orange-50 rounded-xl flex items-center justify-center text-primary mb-1 shadow-inner border border-orange-200/50 transform rotate-3 hover:rotate-0 transition-all duration-300">
+          <ChefHat size={20} strokeWidth={1.5} />
         </div>
         <div className="flex items-center gap-2">
-          <h3 className="text-2xl font-extrabold text-gray-900 tracking-tight">Ready to Cook?</h3>
-          <Sparkles className="text-yellow-500 h-5 w-5 animate-pulse" />
+          <h3 className="text-xl font-extrabold text-gray-900 tracking-tight">Ready to Cook?</h3>
+          <Sparkles className="text-yellow-500 h-4 w-4 animate-pulse" />
         </div>
-        <p className="text-sm text-gray-500 font-medium text-center max-w-62.5">
+        <p className="text-xs text-gray-500 font-medium text-center max-w-62.5">
           Login to access your favorite recipes and daily meal plans.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit, onError)} className="flex flex-col gap-5 relative z-10">
+      <form onSubmit={handleSubmit(onSubmit, onError)} className="flex flex-col gap-3 relative z-10">
         <InputField
           label="Email Address"
           type="email"
@@ -113,7 +113,7 @@ export default function LoginForm() {
           type="submit" 
           isLoading={isSubmitting} 
           loadingText="Warming up the oven..."
-          className="mt-4 group"
+          className="mt-2 group py-2"
         >
           <span className="flex items-center gap-2">
             Sign in 

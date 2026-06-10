@@ -14,7 +14,7 @@ export function middleware(
     //Public Route
     if (isPublicRoute) {
         if (token &&
-            (pathname === "/login" || pathname === "/register")
+            (pathname === "/login" || pathname === "/register" || pathname === "/")
         ) {
             try {
                 verifyToken(token);

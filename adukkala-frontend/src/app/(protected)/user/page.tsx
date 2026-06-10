@@ -3,33 +3,14 @@
 
 import { LogOut, BookOpen, Heart, Flame } from "lucide-react";
 
+import Header from "@/components/layout/Header";
+
 export default function DashboardPage() {
  
 
-
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Navigation Header */}
-      <header className="bg-white border-b border-gray-100 sticky top-0 z-30 select-none">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="h-9 w-9 rounded-lg bg-primary flex items-center justify-center text-white font-bold animate-pulse">
-              A
-            </div>
-            <span className="text-xl font-bold tracking-tight text-gray-900">
-              Adukkala
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <button
-              className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-50 hover:bg-gray-100 hover:text-gray-900 rounded-xl transition-all duration-150 cursor-pointer disabled:opacity-50"
-            >
-              <LogOut className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
