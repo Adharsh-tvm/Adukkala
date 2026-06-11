@@ -1,28 +1,39 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
-import { User, Mail, Lock, BookOpen, ArrowRight, UtensilsCrossed } from "lucide-react";
+import {
+  User,
+  Mail,
+  Lock,
+  BookOpen,
+  ArrowRight,
+  UtensilsCrossed,
+} from "lucide-react";
 
 import InputField from "@/components/ui/InputField";
 import PasswordField from "@/components/ui/PasswordField";
 import LoadingButton from "@/components/ui/LoadingButton";
 import { registerAction } from "@/actions/auth/register.action";
+import { googleLoginAction } from "@/actions/auth/google-login.action";
+import { GoogleLogin } from "@react-oauth/google";
 
-const registerSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string().min(6, "Confirm password is required"),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-});
+const registerSchema = z
+  .object({
+    name: z.string().min(2, "Name must be at least 2 characters"),
+    email: z.string().email("Please enter a valid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(6, "Confirm password is required"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 type RegisterValues = z.infer<typeof registerSchema>;
 
@@ -44,9 +55,30 @@ export default function RegisterForm() {
     },
   });
 
+  const handleGoogleLogin = async (credentialResponse: any) => {
+    try {
+      if (!credentialResponse.credential) {
+        toast.error("Google login failed");
+        return;
+      }
+
+      const response = await googleLoginAction(credentialResponse.credential);
+
+      if (response.success) {
+        router.push("/user");
+        router.refresh();
+        toast.success("Welcome to Adukkala");
+      } else {
+        toast.error(response.message);
+      }
+    } catch {
+      toast.error("Google login failed");
+    }
+  };
+
   const onSubmit = async (data: RegisterValues) => {
     setIsSubmitting(true);
-    
+
     try {
       const { confirmPassword, ...submitData } = data;
       const response = await registerAction(submitData);
@@ -72,7 +104,7 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="w-full flex flex-col gap-4 relative">
+    <div className="w-full flex flex-col gap-2 relative">
       {/* Decorative background glow */}
       <div className="absolute -top-10 -right-10 w-32 h-32 bg-orange-200 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob pointer-events-none"></div>
       <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-green-200 rounded-full mix-blend-multiply filter blur-2xl opacity-30 animate-blob animation-delay-4000 pointer-events-none"></div>
@@ -82,7 +114,9 @@ export default function RegisterForm() {
           <BookOpen size={20} strokeWidth={1.5} />
         </div>
         <div className="flex items-center gap-2">
-          <h3 className="text-xl font-extrabold text-gray-900 tracking-tight">Join Adukkala</h3>
+          <h3 className="text-xl font-extrabold text-gray-900 tracking-tight">
+            Join Adukkala
+          </h3>
           <UtensilsCrossed className="text-orange-500 h-4 w-4" />
         </div>
         <p className="text-xs text-gray-500 font-medium text-center max-w-60">
@@ -90,7 +124,10 @@ export default function RegisterForm() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit, onError)} className="flex flex-col gap-3 relative z-10">
+      <form
+        onSubmit={handleSubmit(onSubmit, onError)}
+        className="flex flex-col gap-4 relative z-10"
+      >
         <InputField
           label="Full Name"
           type="text"
@@ -121,23 +158,43 @@ export default function RegisterForm() {
           {...register("confirmPassword")}
         />
 
-        <LoadingButton 
-          type="submit" 
-          isLoading={isSubmitting} 
+        <LoadingButton
+          type="submit"
+          isLoading={isSubmitting}
           loadingText="Preparing your kitchen..."
-          className="mt-2 group py-2"
+          className="mt-1 group py-2"
         >
-          <span className="flex items-center gap-2">
+          <span className="flex items-center gap-">
             Create Account
-            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            <ArrowRight
+              size={18}
+              className="group-hover:translate-x-1 transition-transform"
+            />
           </span>
         </LoadingButton>
       </form>
 
-      <div className="text-center text-sm font-medium text-gray-500 mt-2">
+      <div className="relative">
+        <div className="flex items-center my-2">
+          <div className="grow border-t border-gray-200"></div>
+
+          <span className="mx-4 text-sm text-gray-500">OR</span>
+
+          <div className="grow border-t border-gray-200"></div>
+        </div>
+
+        <div className="flex justify-center">
+          <GoogleLogin
+            onSuccess={handleGoogleLogin}
+            onError={() => toast.error("Google login failed")}
+          />
+        </div>
+      </div>
+
+      <div className="text-center text-sm font-medium text-gray-500 mt-1">
         Already have a kitchen?{" "}
-        <Link 
-          href="/login" 
+        <Link
+          href="/login"
           className="text-primary hover:text-primary-hover transition-colors font-bold"
         >
           Sign in here
