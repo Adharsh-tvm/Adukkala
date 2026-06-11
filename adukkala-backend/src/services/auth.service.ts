@@ -1,8 +1,9 @@
-import { email } from "zod";
 import { prisma } from "../prisma/prisma";
 import { comparePassword, hashPassword } from "../utils/hash";
 import { generateToken } from "../utils/jwt";
 import { ApiError } from "../utils/api-error";
+import { GoogleLoginInput } from "../shared/types/auth.types";
+import { verifyGoogleToken } from "../utils/google-auth";
 
 interface RegisterInput {
     name: string;
@@ -55,7 +56,7 @@ class AuthService {
             }
         });
 
-        if (!user) {
+        if (!user || !user.password) {
             throw new ApiError(
                 401,
                 "Invalid credentials"
@@ -79,6 +80,49 @@ class AuthService {
         return {
             token
         };
+    }
+
+    async googleLogin(
+        data: GoogleLoginInput
+    ) {
+
+        const googleUser = await verifyGoogleToken(
+            data.credential
+        );
+
+        let user = await prisma.user.findUnique({
+            where: {
+                email: googleUser.email
+            }
+        });
+
+        if (!user) {
+            user = await prisma.user.create({
+                data: {
+                    name: googleUser.name,
+                    email: googleUser.email,
+                    googleId: googleUser.googleId,
+                    profileImage: googleUser.picture
+                }
+            });
+        } else if (!user.googleId) {
+            user = await prisma.user.update({
+                where: {
+                    id: user.id
+                },
+                data: {
+                    googleId: googleUser.googleId,
+                    profileImage: googleUser.picture
+                }
+            });
+        }
+        
+        const token = generateToken(user.id);
+
+        return {
+            token
+        }
+
     }
 }
 

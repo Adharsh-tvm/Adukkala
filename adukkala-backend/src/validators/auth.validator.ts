@@ -9,4 +9,11 @@ export const registerSchema = z.object({
 export const loginSchema = z.object({
     email: z.email("Invalid email"),
     password: z.string().min(6)
-})
+});
+
+export const googleLoginSchema = z.object({
+    credential: z.string().min(
+        1,
+        "Google credential is required"
+    )
+});

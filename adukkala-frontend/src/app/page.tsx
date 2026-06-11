@@ -1,9 +1,15 @@
-import React from "react";
+"use client"
+
 import Image from "next/image";
 import Link from "next/link";
 import { Utensils, ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function WelcomePage() {
+
+const router = useRouter();
+router.refresh()
+
   return (
     <div className="min-h-screen max-h-screen w-full relative flex items-center justify-center p-4 sm:p-6 bg-orange-50 overflow-hidden">
       {/* Full Screen Background Image */}

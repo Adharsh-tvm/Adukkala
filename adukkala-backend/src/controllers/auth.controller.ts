@@ -1,6 +1,7 @@
 import { Response, NextFunction } from "express";
 import { authService } from "../services/auth.service";
 import { AuthRequest } from "../types/auth-request";
+import { GoogleLoginInput } from "../shared/types/auth.types";
 
 export const register = async (req: AuthRequest, res: Response, next: NextFunction) => {
 
@@ -27,5 +28,24 @@ export const login = async (req: AuthRequest, res: Response, next: NextFunction)
         });
     } catch (error) {
         next(error)
+    }
+};
+
+export const googleLogin = async (
+    req: AuthRequest,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const result = await authService.googleLogin(
+            req.body as GoogleLoginInput
+        );
+
+        res.status(200).json({
+            success: true,
+            data: result
+        })
+    } catch (error) {
+        next(error);
     }
 };

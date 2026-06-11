@@ -12,7 +12,11 @@ model User {
 
   name       String
   email      String      @unique
-  password   String
+  password   String?
+
+  googleId      String?  @unique
+  profileImage  String?
+
 
   favorites  Favorite[]
 

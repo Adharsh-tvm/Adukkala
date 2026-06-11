@@ -27,4 +27,16 @@ export const authService = {
 
         return data;
     },
+
+    async googleLogin (
+        payload : {
+            credential : string;
+        }
+    ) {
+
+        const {data} = await api.post("/auth/google", payload);
+
+        return data;
+
+    }
 }

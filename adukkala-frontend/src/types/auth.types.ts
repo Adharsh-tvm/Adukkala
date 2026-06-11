@@ -12,3 +12,7 @@ export interface RegisterRequest {
 export interface LoginResponse {
     token: string;
 }
+
+export interface GoogleAuthInput {
+    credential: string;
+}

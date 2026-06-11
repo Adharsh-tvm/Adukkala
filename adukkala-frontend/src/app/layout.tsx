@@ -1,7 +1,7 @@
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./globals.css";
 
 import { ReactNode } from "react";
-
 
 import { Toaster } from "sonner";
 
@@ -10,12 +10,15 @@ export default async function RootLayout({
 }: {
   children: ReactNode;
 }) {
-
   return (
     <html lang="en">
       <body>
-        {children}
-        <Toaster richColors />
+        <GoogleOAuthProvider
+          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
+        >
+          {children}
+          <Toaster richColors />
+        </GoogleOAuthProvider>
       </body>
     </html>
   );

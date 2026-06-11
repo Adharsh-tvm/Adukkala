@@ -13,6 +13,8 @@ import InputField from "@/components/ui/InputField";
 import PasswordField from "@/components/ui/PasswordField";
 import LoadingButton from "@/components/ui/LoadingButton";
 import { loginAction } from "@/actions/auth/login.action";
+import { googleLoginAction } from "@/actions/auth/google-login.action";
+import { GoogleLogin } from "@react-oauth/google";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -37,9 +39,30 @@ export default function LoginForm() {
     },
   });
 
+  const handleGoogleLogin = async (credentialResponse: any) => {
+    try {
+      if (!credentialResponse.credential) {
+        toast.error("Google login failed");
+        return;
+      }
+
+      const response = await googleLoginAction(credentialResponse.credential);
+
+      if (response.success) {
+        router.push("/user");
+        router.refresh();
+        toast.success("Welcome to Adukkala");
+      } else {
+        toast.error(response.message);
+      }
+    } catch {
+      toast.error("Google login failed");
+    }
+  };
+
   const onSubmit = async (data: LoginValues) => {
     setIsSubmitting(true);
-    
+
     try {
       const response = await loginAction(data);
       if (response.success) {
@@ -75,7 +98,9 @@ export default function LoginForm() {
           <ChefHat size={20} strokeWidth={1.5} />
         </div>
         <div className="flex items-center gap-2">
-          <h3 className="text-xl font-extrabold text-gray-900 tracking-tight">Ready to Cook?</h3>
+          <h3 className="text-xl font-extrabold text-gray-900 tracking-tight">
+            Ready to Cook?
+          </h3>
           <Sparkles className="text-yellow-500 h-4 w-4 animate-pulse" />
         </div>
         <p className="text-xs text-gray-500 font-medium text-center max-w-62.5">
@@ -83,7 +108,10 @@ export default function LoginForm() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit, onError)} className="flex flex-col gap-3 relative z-10">
+      <form
+        onSubmit={handleSubmit(onSubmit, onError)}
+        className="flex flex-col gap-3 relative z-10"
+      >
         <InputField
           label="Email Address"
           type="email"
@@ -100,8 +128,8 @@ export default function LoginForm() {
             {...register("password")}
           />
           <div className="flex justify-end">
-            <Link 
-              href="/forgot-password" 
+            <Link
+              href="/forgot-password"
               className="text-sm font-semibold text-primary hover:text-primary-hover transition-colors"
             >
               Forgot password?
@@ -109,23 +137,42 @@ export default function LoginForm() {
           </div>
         </div>
 
-        <LoadingButton 
-          type="submit" 
-          isLoading={isSubmitting} 
+        <LoadingButton
+          type="submit"
+          isLoading={isSubmitting}
           loadingText="Warming up the oven..."
           className="mt-2 group py-2"
         >
           <span className="flex items-center gap-2">
-            Sign in 
-            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            Sign in
+            <ArrowRight
+              size={18}
+              className="group-hover:translate-x-1 transition-transform"
+            />
           </span>
         </LoadingButton>
       </form>
+      <div className="relative">
+        <div className="flex items-center my-4">
+          <div className="grow border-t border-gray-200"></div>
+
+          <span className="mx-4 text-sm text-gray-500">OR</span>
+
+          <div className="grow border-t border-gray-200"></div>
+        </div>
+
+        <div className="flex justify-center">
+          <GoogleLogin
+            onSuccess={handleGoogleLogin}
+            onError={() => toast.error("Google login failed")}
+          />
+        </div>
+      </div>
 
       <div className="text-center text-sm font-medium text-gray-500 mt-2">
         Don't have an account?{" "}
-        <Link 
-          href="/register" 
+        <Link
+          href="/register"
           className="text-primary hover:text-primary-hover transition-colors font-bold"
         >
           Create one now
