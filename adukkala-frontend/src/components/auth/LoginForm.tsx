@@ -49,7 +49,7 @@ export default function LoginForm() {
       const response = await googleLoginAction(credentialResponse.credential);
 
       if (response.success) {
-        router.push("/user");
+        router.replace("/user");
         router.refresh();
         toast.success("Welcome to Adukkala");
       } else {
@@ -67,7 +67,7 @@ export default function LoginForm() {
       const response = await loginAction(data);
       if (response.success) {
         toast.success("Welcome back Chef!");
-        router.push("/user");
+        router.replace("/user");
         router.refresh();
       } else {
         toast.error(response.message || "Invalid email or password");
