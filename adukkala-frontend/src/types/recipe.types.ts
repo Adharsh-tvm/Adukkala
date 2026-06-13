@@ -23,3 +23,11 @@ export interface RecipeDetail {
         carbs?: string;
     };
 }
+
+export interface PaginatedRecipes {
+    recipes: Recipe[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+}

@@ -7,10 +7,10 @@ class RecipeService {
 
     async searchRecipes(
         query: string,
-        page: number
+        page: number = 1,
+        limit: number = 12
     ) {
-        const pageSize = 10;
-        const offset = (page - 1) * pageSize;
+        const offset = (page - 1) * limit;
 
         try {
             const response = await axios.get(
@@ -19,12 +19,14 @@ class RecipeService {
                     params: {
                         apiKey: API_KEY,
                         query,
-                        number: pageSize,
+                        number: limit,
                         offset,
                         addRecipeInformation: true
                     }
                 }
             );
+
+            const total = response.data.totalResults;
 
             return {
                 recipes: response.data.results.map(
@@ -42,7 +44,10 @@ class RecipeService {
                         readyInMinutes: recipe.readyInMinutes
                     })
                 ),
-                total: response.data.totalResults
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
             };
         } catch (error) {
             throw new ApiError(

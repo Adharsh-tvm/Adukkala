@@ -1,26 +1,24 @@
-import { Recipe, RecipeDetail } from "@/types/recipe.types";
-import { api } from "./api/client"
+import { Recipe, RecipeDetail, PaginatedRecipes } from "@/types/recipe.types";
+import { api } from "./api/client";
 import { ENDPOINTS } from "./api/endpoints";
 
 export const recipeService = {
-
     async search(
         query: string,
-        page: number
-    ) {
+        page: number = 1,
+        limit: number = 12
+    ): Promise<PaginatedRecipes> {
         const { data } = await api.get<{
             success: boolean;
-            data: {
-                recipes: Recipe[];
-                total: number;
-            };
+            data: PaginatedRecipes;
         }>(
             ENDPOINTS.RECIPES.SEARCH,
             {
                 params: {
                     query,
                     page,
-                }
+                    limit,
+                },
             }
         );
 
@@ -38,5 +36,5 @@ export const recipeService = {
         );
 
         return data.data;
-    }
-}
+    },
+};
