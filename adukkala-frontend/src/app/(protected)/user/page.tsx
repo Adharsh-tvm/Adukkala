@@ -1,85 +1,61 @@
 "use client";
 
-
-import { LogOut, BookOpen, Heart, Flame } from "lucide-react";
-
 import Header from "@/components/layout/Header";
+import CategoryCard from "@/components/home/CategoryCard";
 
 export default function DashboardPage() {
- 
+  const categories = [
+    {
+      title: "Dinner",
+      imageSrc: "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=800&auto=format&fit=crop",
+      href: "/search?query=dinner",
+    },
+    {
+      title: "Salads",
+      imageSrc: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=800&auto=format&fit=crop",
+      href: "/search?query=salads",
+    },
+    {
+      title: "Healthy",
+      imageSrc: "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=800&auto=format&fit=crop",
+      href: "/search?query=healthy",
+    },
+    {
+      title: "Quick and Easy",
+      imageSrc: "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?q=80&w=800&auto=format&fit=crop",
+      href: "/search?query=quick",
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col">
       <Header />
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
-        {/* Welcome and Stats Card */}
-        <div className="bg-white border border-gray-100 rounded-3xl p-6 md:p-8 shadow-xs">
-          {/* Welcome Section */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-8 border-b border-gray-100">
-            <div>
-              <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-                Welcome to Adukkala!
-              </h1>
-              <p className="mt-1.5 text-gray-500 font-medium">
-                Your kitchen helper. Find thousands of delicious recipes and save your favorites.
-              </p>
-            </div>
-          </div>
-
-          {/* Quick Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <div className="border border-gray-100 bg-gray-50/50 rounded-2xl p-5 flex items-center gap-4 hover:shadow-xs transition-shadow">
-              <div className="h-12 w-12 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center">
-                <BookOpen className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-gray-900">0</div>
-                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  My Collections
-                </div>
-              </div>
-            </div>
-
-            <div className="border border-gray-100 bg-gray-50/50 rounded-2xl p-5 flex items-center gap-4 hover:shadow-xs transition-shadow">
-              <div className="h-12 w-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center animate-pulse">
-                <Heart className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-gray-900">{}</div>
-                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Favorite Recipes
-                </div>
-              </div>
-            </div>
-
-            <div className="border border-gray-100 bg-gray-50/50 rounded-2xl p-5 flex items-center gap-4 hover:shadow-xs transition-shadow">
-              <div className="h-12 w-12 rounded-xl bg-green-500/10 text-green-500 flex items-center justify-center">
-                <Flame className="h-6 w-6" />
-              </div>
-              <div>
-                <div className="text-2xl font-bold text-gray-900">0</div>
-                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Dishes Cooked
-                </div>
-              </div>
-            </div>
-          </div>
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col gap-12">
+        
+        {/* Banner Section */}
+        <div className="text-center space-y-4">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 font-serif tracking-wide">
+            Adukkala
+          </h1>
+          <p className="text-gray-500 italic tracking-widest text-sm sm:text-base">
+            SIMPLE RECIPES MADE FOR <span className="text-primary/80 font-serif">real, actual, everyday life.</span>
+          </p>
         </div>
 
-        {/* Search Recipes Section */}
-        <div className="bg-white border border-gray-100 rounded-3xl p-6 md:p-8 shadow-xs flex flex-col gap-6">
-          <div className="flex flex-col gap-1 select-none">
-            <h2 className="text-2xl font-extrabold text-gray-900 tracking-tight">
-              Discover Delicious Recipes
-            </h2>
-            <p className="text-sm text-gray-500 font-medium">
-              Search by ingredients, cook times, cuisines, or dish names.
-            </p>
-          </div>
-
+        {/* Categories Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+          {categories.map((category) => (
+            <CategoryCard
+              key={category.title}
+              title={category.title}
+              imageSrc={category.imageSrc}
+              href={category.href}
+            />
+          ))}
         </div>
+
       </main>
     </div>
   );

@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { LogOut, X } from "lucide-react";
+import Link from "next/link";
+import { LogOut, X, Search, Heart, Home } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { logoutAction } from "@/actions/auth/logout.action";
 import { toast } from "sonner";
@@ -45,6 +46,29 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-4">
+            <Link 
+              href="/search"
+              className="p-2 text-gray-500 hover:text-primary transition-colors rounded-full hover:bg-orange-50"
+              title="Search Recipes"
+            >
+              <Search className="h-5 w-5" />
+            </Link>
+            <Link 
+              href="/"
+              className="p-2 text-gray-500 hover:text-primary transition-colors rounded-full hover:bg-orange-50"
+              title="Search Recipes"
+            >
+              {/* <Home className="h-5 w-5" /> */}
+              HOME
+            </Link>
+            <Link 
+              href="/favorites"
+              className="p-2 text-gray-500 hover:text-red-500 transition-colors rounded-full hover:bg-red-50"
+              title="My Favorites"
+            >
+              {/* <Heart className="h-5 w-5" /> */}
+            FAVORITES
+            </Link>
             <button
               onClick={() => setShowLogoutModal(true)}
               disabled={isLoggingOut}

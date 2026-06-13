@@ -11,7 +11,7 @@ export const favoriteService = {
         token: string
     ): Promise<Favorite[]> {
         const { data } =
-            await api.get<Favorite[]>(
+            await api.get<any>(
                 ENDPOINTS.FAVORITES.BASE,
                 {
                     headers: {
@@ -20,7 +20,7 @@ export const favoriteService = {
                 }
             );
 
-        return data;
+        return data?.data ?? data;
     },
 
     async addFavorite(
