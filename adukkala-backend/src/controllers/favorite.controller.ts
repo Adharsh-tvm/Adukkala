@@ -28,9 +28,25 @@ export const getFavorites = async (
     next: NextFunction
 ) => {
     try {
+
+        const page = Math.max(
+            1,
+            Number(req.query.page) || 1
+        );
+
+        const limit = Math.min(
+            50,
+            Math.max(
+                1,
+                Number(req.query.limit) || 12
+            )
+        );
+
         const result =
             await favoriteService.getFavorites(
-                req.userId!
+                req.userId!,
+                page,
+                limit
             );
 
         res.status(200).json({

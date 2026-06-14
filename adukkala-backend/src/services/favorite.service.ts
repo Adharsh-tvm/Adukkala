@@ -32,15 +32,42 @@ class FavoriteService {
         });
     }
 
-    async getFavorites(userId: string) {
-        return prisma.favorite.findMany({
-            where: {
-                userId
-            },
-            orderBy: {
-                createdAt: "desc"
-            }
-        })
+    async getFavorites(
+        userId: string,
+        page: number = 1,
+        limit: number = 12
+    ) {
+        const skip = (page - 1) * limit;
+
+        const [favorites, total] =
+            await Promise.all([
+                prisma.favorite.findMany({
+                    where: {
+                        userId,
+                    },
+                    orderBy: {
+                        createdAt: "desc",
+                    },
+                    skip,
+                    take: limit,
+                }),
+
+                prisma.favorite.count({
+                    where: {
+                        userId,
+                    },
+                }),
+            ]);
+
+        return {
+            favorites,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(
+                total / limit
+            ),
+        };
     }
 
     async deleteFavorite(

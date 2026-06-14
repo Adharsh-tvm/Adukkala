@@ -8,19 +8,26 @@ import type {
 
 export const favoriteService = {
     async getFavorites(
-        token: string
-    ): Promise<Favorite[]> {
+        token: string,
+        page: number = 1,
+        limit: number = 4
+    ) {
         const { data } =
-            await api.get<any>(
+            await api.get(
                 ENDPOINTS.FAVORITES.BASE,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
+
+                    params: {
+                        page,
+                        limit,
+                    },
                 }
             );
 
-        return data?.data ?? data;
+        return data.data;
     },
 
     async addFavorite(

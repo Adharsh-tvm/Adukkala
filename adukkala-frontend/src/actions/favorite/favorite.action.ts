@@ -4,15 +4,24 @@ import { getAccessToken } from "@/lib/auth/cookies";
 import { favoriteService } from "@/services/favorite.service";
 import type { CreateFavoriteDto } from "@/types/favorite.types";
 
-export async function getFavoritesAction() {
-  const token = await getAccessToken();
-  if (!token) return { success: false, data: [] };
-  
+export async function getFavoritesAction(
+  page: number = 1,
+  limit: number = 4
+) {
+  const token =
+    await getAccessToken();
+
+  if (!token) {
+    return { success: false, data: null };
+  }
+
   try {
-    const data = await favoriteService.getFavorites(token);
+    const data =
+      await favoriteService.getFavorites(token, page, limit);
+
     return { success: true, data };
   } catch (error: any) {
-    return { success: false, data: [], message: error.message };
+    return { success: false, data: null, message: error.message, };
   }
 }
 

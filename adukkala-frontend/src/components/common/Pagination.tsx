@@ -11,7 +11,7 @@ export default function Pagination({
   totalPages,
   onPageChange,
 }: PaginationProps) {
-  if (totalPages <= 1) return null;
+  if (totalPages < 1) return null;
 
   return (
     <div className="flex justify-center items-center gap-2 mt-8">
