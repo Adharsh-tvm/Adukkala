@@ -1,15 +1,12 @@
 import axios from "axios";
 import { ApiError } from "../utils/api-error";
+import { HTTP_STATUS } from "../shared/constants/http-status.constants";
+import { MESSAGES } from "../shared/constants/message.constants";
 
 const API_KEY = process.env.SPOONACULAR_API_KEY;
 
 class RecipeService {
-
-    async searchRecipes(
-        query: string,
-        page: number = 1,
-        limit: number = 12
-    ) {
+    async searchRecipes(query: string, page: number = 1, limit: number = 12) {
         const offset = (page - 1) * limit;
 
         try {
@@ -50,16 +47,11 @@ class RecipeService {
                 totalPages: Math.ceil(total / limit),
             };
         } catch (error) {
-            throw new ApiError(
-                500,
-                "Failed to fetch recipes"
-            );
+            throw new ApiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, MESSAGES.COMMON.SERVER_ERROR);
         }
     }
 
-    async getRecipeById(
-        recipeId: number
-    ) {
+    async getRecipeById(recipeId: number) {
         try {
             const response = await axios.get(
                 `https://api.spoonacular.com/recipes/${recipeId}/information`,
@@ -73,10 +65,7 @@ class RecipeService {
 
             return response.data;
         } catch {
-            throw new ApiError(
-                404,
-                "Recipe not found"
-            );
+            throw new ApiError(HTTP_STATUS.NOT_FOUND, MESSAGES.RECIPE.NOT_FOUND);
         }
     }
 }

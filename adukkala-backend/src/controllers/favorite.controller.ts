@@ -1,6 +1,9 @@
 import { NextFunction, Response } from "express";
 import { favoriteService } from "../services/favorite.service";
 import { AuthRequest } from "../types/auth-request";
+import { HTTP_STATUS } from "../shared/constants/http-status.constants";
+import { MESSAGES } from "../shared/constants/message.constants";
+import { ApiResponse } from "../utils/api-response";
 
 export const addFavorite = async (
     req: AuthRequest,
@@ -12,11 +15,9 @@ export const addFavorite = async (
             req.userId!,
             req.body
         );
-
-        res.status(201).json({
-            success: true,
-            data: result
-        });
+        res.status(HTTP_STATUS.CREATED).json(
+            ApiResponse.success(result, MESSAGES.FAVORITE.ADD_SUCCESS)
+        );
     } catch (error) {
         next(error)
     }
@@ -28,31 +29,13 @@ export const getFavorites = async (
     next: NextFunction
 ) => {
     try {
+        const page = Math.max(1, Number(req.query.page) || 1);
+        const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 12));
+        const result = await favoriteService.getFavorites(req.userId!, page, limit);
 
-        const page = Math.max(
-            1,
-            Number(req.query.page) || 1
+        res.status(HTTP_STATUS.OK).json(
+            ApiResponse.success(result, MESSAGES.FAVORITE.FETCH_SUCCESS)
         );
-
-        const limit = Math.min(
-            50,
-            Math.max(
-                1,
-                Number(req.query.limit) || 12
-            )
-        );
-
-        const result =
-            await favoriteService.getFavorites(
-                req.userId!,
-                page,
-                limit
-            );
-
-        res.status(200).json({
-            success: true,
-            data: result
-        });
     } catch (error) {
         next(error);
     }
@@ -64,19 +47,12 @@ export const deleteFavorite = async (
     next: NextFunction
 ) => {
     try {
-        const recipeId =
-            Number(req.params.recipeId);
+        const recipeId = Number(req.params.recipeId);
+        const result = await favoriteService.deleteFavorite(req.userId!, recipeId);
 
-        const result =
-            await favoriteService.deleteFavorite(
-                req.userId!,
-                recipeId
-            );
-
-        res.status(200).json({
-            success: true,
-            data: result
-        });
+        res.status(HTTP_STATUS.OK).json(
+            ApiResponse.success(result, MESSAGES.FAVORITE.REMOVE_SUCCESS)
+        );
     } catch (error) {
         next(error);
     }

@@ -23,13 +23,13 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
       try {
         const [recipeData, favoritesResult] = await Promise.all([
           recipeService.getRecipe(recipeId),
-          getFavoritesAction()
+          getFavoritesAction(1, 50)
         ]);
         
         setRecipe(recipeData);
 
-        if (favoritesResult.success && Array.isArray(favoritesResult.data)) {
-          const found = favoritesResult.data.some((f: any) => f.recipeId === recipeId);
+        if (favoritesResult.success && favoritesResult.data?.favorites) {
+          const found = favoritesResult.data.favorites.some((f: any) => f.recipeId === recipeId);
           setIsFavorite(found);
         }
       } catch (error) {

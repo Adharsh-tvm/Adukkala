@@ -4,6 +4,8 @@ import { generateToken } from "../utils/jwt";
 import { ApiError } from "../utils/api-error";
 import { GoogleLoginInput } from "../shared/types/auth.types";
 import { verifyGoogleToken } from "../utils/google-auth";
+import { HTTP_STATUS } from "../shared/constants/http-status.constants";
+import { MESSAGES } from "../shared/constants/message.constants";
 
 interface RegisterInput {
     name: string;
@@ -17,23 +19,16 @@ interface LoginInput {
 }
 
 class AuthService {
-
     async register(data: RegisterInput) {
         const existingUser = await prisma.user.findUnique({
-            where: {
-                email: data.email
-            }
+            where: { email: data.email }
         });
 
         if (existingUser) {
-            throw new ApiError(
-                409,
-                "Email already registered"
-            );
+            throw new ApiError(HTTP_STATUS.CONFLICT, MESSAGES.AUTH.USER_EXISTS);
         }
 
         const hashedPassword = await hashPassword(data.password);
-
         const user = await prisma.user.create({
             data: {
                 name: data.name,
@@ -51,49 +46,28 @@ class AuthService {
 
     async login(data: LoginInput) {
         const user = await prisma.user.findUnique({
-            where: {
-                email: data.email
-            }
+            where: { email: data.email }
         });
 
         if (!user || !user.password) {
-            throw new ApiError(
-                401,
-                "Invalid credentials"
-            );
+            throw new ApiError(HTTP_STATUS.UNAUTHORIZED, MESSAGES.AUTH.INVALID_CREDENTIALS);
         }
 
-        const isMatch = await comparePassword(
-            data.password,
-            user.password
-        );
+        const isMatch = await comparePassword(data.password, user.password);
 
         if (!isMatch) {
-            throw new ApiError(
-                401,
-                "Invalid credentials"
-            );
+            throw new ApiError(HTTP_STATUS.UNAUTHORIZED, MESSAGES.AUTH.INVALID_CREDENTIALS);
         }
 
         const token = generateToken(user.id);
-
-        return {
-            token
-        };
+        return { token };
     }
 
-    async googleLogin(
-        data: GoogleLoginInput
-    ) {
-
-        const googleUser = await verifyGoogleToken(
-            data.credential
-        );
+    async googleLogin(data: GoogleLoginInput) {
+        const googleUser = await verifyGoogleToken(data.credential);
 
         let user = await prisma.user.findUnique({
-            where: {
-                email: googleUser.email
-            }
+            where: { email: googleUser.email }
         });
 
         if (!user) {
@@ -107,9 +81,7 @@ class AuthService {
             });
         } else if (!user.googleId) {
             user = await prisma.user.update({
-                where: {
-                    id: user.id
-                },
+                where: { id: user.id },
                 data: {
                     googleId: googleUser.googleId,
                     profileImage: googleUser.picture
@@ -118,12 +90,8 @@ class AuthService {
         }
         
         const token = generateToken(user.id);
-
-        return {
-            token
-        }
-
+        return { token };
     }
 }
 
-export const authService = new AuthService()
+export const authService = new AuthService();

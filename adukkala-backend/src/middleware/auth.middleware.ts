@@ -1,26 +1,20 @@
-import {
-    Response,
-    NextFunction
-} from "express";
-
+import { Response, NextFunction } from "express";
 import { verifyToken } from "../utils/jwt";
-
 import { ApiError } from "../utils/api-error";
 import { AuthRequest } from "../types/auth-request";
+import { HTTP_STATUS } from "../shared/constants/http-status.constants";
+import { MESSAGES } from "../shared/constants/message.constants";
 
 export const authenticate = (
     req: AuthRequest,
     _res: Response,
     next: NextFunction
 ) => {
-    const authHeader =  req.headers.authorization;
+    const authHeader = req.headers.authorization;
 
     if (!authHeader) {
         return next(
-            new ApiError(
-                401,
-                "Access denied"
-            )
+            new ApiError(HTTP_STATUS.UNAUTHORIZED, MESSAGES.AUTH.UNAUTHORIZED)
         );
     }
 
@@ -28,25 +22,17 @@ export const authenticate = (
 
     if (!token) {
         return next(
-            new ApiError(
-                401,
-                "Token missing"
-            )
+            new ApiError(HTTP_STATUS.UNAUTHORIZED, MESSAGES.AUTH.INVALID_TOKEN)
         );
     }
 
     try {
         const decoded = verifyToken(token);
-
         req.userId = decoded.userId as string;
-
         next();
     } catch {
         next(
-            new ApiError(
-                401,
-                "Invalid token"
-            )
+            new ApiError(HTTP_STATUS.UNAUTHORIZED, MESSAGES.AUTH.INVALID_TOKEN)
         );
     }
 };
