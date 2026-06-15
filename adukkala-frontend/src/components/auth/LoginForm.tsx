@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
@@ -30,7 +30,6 @@ export default function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
   } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -39,7 +38,7 @@ export default function LoginForm() {
     },
   });
 
-  const handleGoogleLogin = async (credentialResponse: any) => {
+  const handleGoogleLogin = async (credentialResponse: { credential?: string }) => {
     try {
       if (!credentialResponse.credential) {
         toast.error("Google login failed");
@@ -72,15 +71,15 @@ export default function LoginForm() {
       } else {
         toast.error(response.message || "Invalid email or password");
       }
-    } catch (error: any) {
-      toast.error(error?.message || "An unexpected error occurred");
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : "An unexpected error occurred");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const onError = (formErrors: any) => {
-    Object.values(formErrors).forEach((err: any) => {
+  const onError = (formErrors: FieldErrors<LoginValues>) => {
+    Object.values(formErrors).forEach((err) => {
       if (err?.message) {
         toast.error(err.message);
       }
@@ -170,7 +169,7 @@ export default function LoginForm() {
       </div>
 
       <div className="text-center text-sm font-medium text-gray-500 mt-2">
-        Don't have an account?{" "}
+        Don&apos;t have an account?{" "}
         <Link
           href="/register"
           className="text-primary hover:text-primary-hover transition-colors font-bold"

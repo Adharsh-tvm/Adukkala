@@ -1,6 +1,6 @@
 import { MESSAGES } from "../shared/constants/message.constants";
 
-export class ApiResponse<T = any> {
+export class ApiResponse<T = unknown> {
     public success: boolean;
     public message: string;
     public data?: T;

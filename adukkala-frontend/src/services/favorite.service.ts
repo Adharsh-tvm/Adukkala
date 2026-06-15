@@ -3,7 +3,6 @@ import { ENDPOINTS } from "./api/endpoints";
 
 import type {
     CreateFavoriteDto,
-    Favorite,
 } from "@/types/favorite.types";
 
 export const favoriteService = {

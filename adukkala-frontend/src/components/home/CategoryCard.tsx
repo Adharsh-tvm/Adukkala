@@ -10,6 +10,7 @@ interface CategoryCardProps {
 export default function CategoryCard({ title, imageSrc, href }: CategoryCardProps) {
   return (
     <Link href={href} className="group relative block w-full aspect-4/5 overflow-hidden rounded-sm bg-gray-100">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={imageSrc}
         alt={title}

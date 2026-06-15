@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
@@ -44,7 +44,6 @@ export default function RegisterForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
   } = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -55,7 +54,7 @@ export default function RegisterForm() {
     },
   });
 
-  const handleGoogleLogin = async (credentialResponse: any) => {
+  const handleGoogleLogin = async (credentialResponse: { credential?: string }) => {
     try {
       if (!credentialResponse.credential) {
         toast.error("Google login failed");
@@ -80,7 +79,8 @@ export default function RegisterForm() {
     setIsSubmitting(true);
 
     try {
-      const { confirmPassword, ...submitData } = data;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { confirmPassword: _, ...submitData } = data;
       const response = await registerAction(submitData);
       if (response.success) {
         toast.success("Account created! Let's start cooking!");
@@ -88,15 +88,15 @@ export default function RegisterForm() {
       } else {
         toast.error(response.message || "Failed to create account");
       }
-    } catch (error: any) {
-      toast.error(error?.message || "An unexpected error occurred");
+    } catch (error: unknown) {
+      toast.error(error instanceof Error ? error.message : "An unexpected error occurred");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const onError = (formErrors: any) => {
-    Object.values(formErrors).forEach((err: any) => {
+  const onError = (formErrors: FieldErrors<RegisterValues>) => {
+    Object.values(formErrors).forEach((err) => {
       if (err?.message) {
         toast.error(err.message);
       }

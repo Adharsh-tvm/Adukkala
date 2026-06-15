@@ -15,12 +15,9 @@ import {
 import { toast } from "sonner";
 
 import { Recipe } from "@/types/recipe.types";
-import { searchRecipesAction } from "@/actions/recipes/search-recipes.action";
-import { 
-  getFavoritesAction, 
-  addFavoriteAction, 
-  removeFavoriteAction 
-} from "@/actions";
+import { addFavoriteAction, getFavoritesAction, removeFavoriteAction } from "@/actions/favorite/favorite.action";
+import { searchRecipesAction } from "@/actions/recipes/recipe.actions";
+
 
 export default function RecipeSearch() {
   const [query, setQuery] = useState("");
@@ -48,11 +45,13 @@ export default function RecipeSearch() {
   useEffect(() => {
     async function loadFavorites() {
       try {
-        const favs = await getFavoritesAction();
-        const favIds = new Set(favs.map(f => f.recipeId));
-        setFavorites(favIds);
-      } catch (err) {
-        console.error("Failed to load favorites:", err);
+        const result = await getFavoritesAction(1, 50);
+        if (result.success && result.data?.favorites) {
+          const favIds = new Set<number>(result.data.favorites.map((f: { recipeId: number }) => f.recipeId));
+          setFavorites(favIds);
+        }
+      } catch {
+        console.error("Failed to load favorites");
       } finally {
         setIsLoadingFavorites(false);
       }
@@ -72,7 +71,7 @@ export default function RecipeSearch() {
         setRecipes([]);
         setTotalResults(0);
       }
-    } catch (err) {
+    } catch {
       toast.error("Failed to fetch recipes. Please try again.");
       setRecipes([]);
       setTotalResults(0);
@@ -82,6 +81,7 @@ export default function RecipeSearch() {
   }, [debouncedQuery, page]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchRecipes();
   }, [fetchRecipes]);
 
@@ -103,7 +103,8 @@ export default function RecipeSearch() {
         } else {
           throw new Error("Failed to remove");
         }
-      } catch (err) {
+      } catch {
+        // eslint-disable-next-line react-hooks/immutability
         newFavorites.add(recipe.id);
         setFavorites(newFavorites);
         toast.error("Could not remove recipe from favorites");
@@ -122,7 +123,8 @@ export default function RecipeSearch() {
         } else {
           throw new Error("Failed to add");
         }
-      } catch (err) {
+      } catch {
+        // eslint-disable-next-line react-hooks/immutability
         newFavorites.delete(recipe.id);
         setFavorites(newFavorites);
         toast.error("Could not add recipe to favorites");
@@ -296,7 +298,7 @@ export default function RecipeSearch() {
             </div>
             <h3 className="text-xl font-bold text-gray-900 mb-2">No recipes found</h3>
             <p className="text-gray-400 max-w-sm font-medium text-sm">
-              We couldn't find any recipes for "{debouncedQuery}". Try refining your search query or choosing one of the popular tags.
+              We couldn&apos;t find any recipes for &quot;{debouncedQuery}&quot;. Try refining your search query or choosing one of the popular tags.
             </p>
           </div>
         )}

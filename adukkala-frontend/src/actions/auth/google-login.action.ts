@@ -17,7 +17,7 @@ export async function googleLoginAction(
         );
 
         return response;
-    } catch (error: any) {
+    } catch (error: unknown) {
         if (isAxiosError(error)) {
             return {
                 success: false,
@@ -27,7 +27,7 @@ export async function googleLoginAction(
 
         return {
             success: false,
-            message: error.message || "Unexpected error"
+            message: error instanceof Error ? error.message : "Unexpected error"
         }
     }
 }

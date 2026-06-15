@@ -22,6 +22,7 @@ export default function AuthProvider({
   const [isAuthenticated, setIsAuthenticated] = useState(initialAuthenticated);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsAuthenticated(initialAuthenticated);
   }, [initialAuthenticated]);
 

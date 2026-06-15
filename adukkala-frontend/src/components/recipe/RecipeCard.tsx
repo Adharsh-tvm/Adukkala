@@ -32,7 +32,8 @@ export default function RecipeCard({ recipe, isFavorite, onToggleFavorite }: Rec
       )}
 
       {/* Image Link */}
-      <Link href={`/recipe/${recipe.id}`} className="block relative w-full aspect-[4/3] overflow-hidden bg-gray-50">
+      <Link href={`/recipe/${recipe.id}`} className="block relative w-full aspect-4/3 overflow-hidden bg-gray-50">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={recipe.image}
           alt={recipe.title}
@@ -50,7 +51,7 @@ export default function RecipeCard({ recipe, isFavorite, onToggleFavorite }: Rec
       </Link>
 
       {/* Content */}
-      <div className="p-4 flex flex-col flex-grow">
+      <div className="p-4 flex flex-col grow">
         <Link href={`/recipe/${recipe.id}`}>
           <h3 className="text-lg font-bold text-gray-900 leading-tight mb-2 group-hover:text-primary transition-colors line-clamp-2">
             {recipe.title}

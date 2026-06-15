@@ -56,9 +56,7 @@ function SearchContent() {
   const [hasSearched, setHasSearched] =
     useState(!!queryParam);
 
-  const performSearch = async (
-    searchQuery: string
-  ) => {
+  const performSearch = React.useCallback(async (searchQuery: string) => {
     if (!searchQuery.trim()) {
       setRecipes([]);
       setHasSearched(false);
@@ -68,45 +66,27 @@ function SearchContent() {
     setIsLoading(true);
 
     try {
-      const result =
-        await searchRecipesAction(
-          searchQuery,
-          page,
-          limit
-        );
+      const result = await searchRecipesAction(searchQuery, page, limit);
 
-      setRecipes(
-        result.recipes || []
-      );
-
-      setTotalPages(
-        result.totalPages || 1
-      );
-
+      setRecipes(result.recipes || []);
+      setTotalPages(result.totalPages || 1);
       setHasSearched(true);
     } catch (error) {
-      console.error(
-        "Search failed:",
-        error
-      );
-
+      console.error("Search failed:", error);
       setRecipes([]);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [page, limit]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setQuery(queryParam);
 
     if (queryParam) {
       performSearch(queryParam);
     }
-  }, [
-    queryParam,
-    page,
-    limit,
-  ]);
+  }, [queryParam, page, limit, performSearch]);
 
   const handleSearch = (
     e: React.FormEvent
@@ -166,8 +146,8 @@ function SearchContent() {
         ) : hasSearched &&
           recipes.length === 0 ? (
           <div className="text-center py-20 text-gray-500 text-lg">
-            No recipes found for "
-            {queryParam}".
+            No recipes found for &quot;
+            {queryParam}&quot;.
             Try another search
             term!
           </div>

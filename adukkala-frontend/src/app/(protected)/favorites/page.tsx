@@ -28,11 +28,7 @@ export default function FavoritesPage() {
 
   const limit = 4;
 
-  useEffect(() => {
-    fetchFavorites();
-  }, [page]);
-
-  const fetchFavorites = async () => {
+  const fetchFavorites = React.useCallback(async () => {
     setIsLoading(true);
 
     const result = await getFavoritesAction(page, limit);
@@ -46,7 +42,13 @@ export default function FavoritesPage() {
     }
 
     setIsLoading(false);
-  };
+  }, [page]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchFavorites();
+  }, [fetchFavorites]);
+
 
   const handleRemoveFavorite = async (id: number) => {
     const result = await removeFavoriteAction(id);
@@ -88,7 +90,7 @@ export default function FavoritesPage() {
             </h3>
 
             <p className="text-gray-500 mb-6 max-w-md">
-              You haven't saved any recipes to your favorites. Start exploring
+              You haven&apos;t saved any recipes to your favorites. Start exploring
               and click the heart icon to save them here!
             </p>
 

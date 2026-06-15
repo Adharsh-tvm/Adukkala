@@ -12,7 +12,7 @@ export default function WelcomePage() {
 
   useEffect(() => {
     router.refresh();
-  }, []);
+  }, [router]);
 
   return (
     <div className="min-h-screen max-h-screen w-full relative flex items-center justify-center p-4 sm:p-6 bg-orange-50 overflow-hidden">

@@ -17,7 +17,7 @@ export async function loginAction(
         );
 
         return response;
-    } catch (error: any) {
+    } catch (error: unknown) {
         if (isAxiosError(error)) {
             return {
                 success: false,
@@ -26,7 +26,7 @@ export async function loginAction(
         }
         return {
             success: false,
-            message: error.message || "An unexpected error occurred",
+            message: error instanceof Error ? error.message : "An unexpected error occurred",
         };
     }
 }

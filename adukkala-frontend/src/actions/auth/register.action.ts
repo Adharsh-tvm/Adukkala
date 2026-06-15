@@ -9,7 +9,7 @@ export async function registerAction(payload: RegisterRequest) {
     try {
         const response = await authService.register(payload);
         return response;
-    } catch (error: any) {
+    } catch (error: unknown) {
         if (isAxiosError(error)) {
             return {
                 success: false,
@@ -18,7 +18,7 @@ export async function registerAction(payload: RegisterRequest) {
         }
         return {
             success: false,
-            message: error.message || "An unexpected error occurred",
+            message: error instanceof Error ? error.message : "An unexpected error occurred",
         };
     }
 }

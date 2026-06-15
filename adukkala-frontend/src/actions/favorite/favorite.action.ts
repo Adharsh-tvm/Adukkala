@@ -20,8 +20,8 @@ export async function getFavoritesAction(
       await favoriteService.getFavorites(token, page, limit);
 
     return { success: true, data };
-  } catch (error: any) {
-    return { success: false, data: null, message: error.message, };
+  } catch (error: unknown) {
+    return { success: false, data: null, message: error instanceof Error ? error.message : "An unexpected error occurred", };
   }
 }
 
@@ -32,8 +32,8 @@ export async function addFavoriteAction(payload: CreateFavoriteDto) {
   try {
     await favoriteService.addFavorite(token, payload);
     return { success: true };
-  } catch (error: any) {
-    return { success: false, message: error.message };
+  } catch (error: unknown) {
+    return { success: false, message: error instanceof Error ? error.message : "An unexpected error occurred" };
   }
 }
 
@@ -44,7 +44,7 @@ export async function removeFavoriteAction(recipeId: number) {
   try {
     await favoriteService.removeFavorite(token, recipeId);
     return { success: true };
-  } catch (error: any) {
-    return { success: false, message: error.message };
+  } catch (error: unknown) {
+    return { success: false, message: error instanceof Error ? error.message : "An unexpected error occurred" };
   }
 }

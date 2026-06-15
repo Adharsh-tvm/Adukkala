@@ -1,4 +1,4 @@
-import { Recipe, RecipeDetail, PaginatedRecipes } from "@/types/recipe.types";
+import { RecipeDetail, PaginatedRecipes } from "@/types/recipe.types";
 import { api } from "./api/client";
 import { ENDPOINTS } from "./api/endpoints";
 

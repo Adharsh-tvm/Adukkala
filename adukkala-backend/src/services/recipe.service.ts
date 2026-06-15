@@ -46,7 +46,7 @@ class RecipeService {
                 limit,
                 totalPages: Math.ceil(total / limit),
             };
-        } catch (error) {
+        } catch {
             throw new ApiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, MESSAGES.COMMON.SERVER_ERROR);
         }
     }

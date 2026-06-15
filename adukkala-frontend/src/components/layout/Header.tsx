@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { LogOut, X, Search, Heart, Home } from "lucide-react";
+import { LogOut, X, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { logoutAction } from "@/actions/auth/logout.action";
 import { toast } from "sonner";
@@ -24,7 +24,7 @@ export default function Header() {
         toast.error("Failed to log out");
         setShowLogoutModal(false);
       }
-    } catch (error) {
+    } catch {
       toast.error("An unexpected error occurred during logout");
       setShowLogoutModal(false);
     } finally {

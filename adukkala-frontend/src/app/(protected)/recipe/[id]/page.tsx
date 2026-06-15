@@ -29,7 +29,7 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
         setRecipe(recipeData);
 
         if (favoritesResult.success && favoritesResult.data?.favorites) {
-          const found = favoritesResult.data.favorites.some((f: any) => f.recipeId === recipeId);
+          const found = favoritesResult.data.favorites.some((f: { recipeId: number }) => f.recipeId === recipeId);
           setIsFavorite(found);
         }
       } catch (error) {
@@ -102,6 +102,7 @@ export default function RecipeDetailsPage({ params }: { params: Promise<{ id: st
       
       {/* Hero Image Section */}
       <div className="relative w-full h-[40vh] md:h-[50vh] bg-gray-200">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img 
           src={recipe.image} 
           alt={recipe.title} 
