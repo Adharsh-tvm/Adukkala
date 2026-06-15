@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { ApiError } from "../utils/api-error";
 import { HTTP_STATUS } from "../shared/constants/http-status.constants";
 import { MESSAGES } from "../shared/constants/message.constants";
@@ -8,6 +8,7 @@ export const errorHandler = (
     error: Error,
     _req: Request,
     res: Response,
+    _next: NextFunction
 ) => {
     if (error instanceof ApiError) {
         return res.status(error.statusCode).json(
