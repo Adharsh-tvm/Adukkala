@@ -25,10 +25,28 @@ import { GoogleLogin } from "@react-oauth/google";
 
 const registerSchema = z
   .object({
-    name: z.string().min(2, "Name must be at least 2 characters"),
+    name: z
+      .string()
+      .trim()
+      .min(2, "Name must be at least 2 characters")
+      .max(50, "Name must be at most 50 characters")
+      .regex(
+        /^[a-zA-Z]+(\s[a-zA-Z]+)*$/,
+        "Name must contain only letters, with single spaces between words"
+      ),
     email: z.string().email("Please enter a valid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(6, "Confirm password is required"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .max(100, "Password must be at most 100 characters")
+      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+      .regex(/[0-9]/, "Password must contain at least one number")
+      .regex(
+        /[^a-zA-Z0-9]/,
+        "Password must contain at least one special character"
+      ),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -44,8 +62,10 @@ export default function RegisterForm() {
   const {
     register,
     handleSubmit,
+    formState: { errors },
   } = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
+    mode: "onSubmit",
     defaultValues: {
       name: "",
       email: "",
@@ -98,7 +118,7 @@ export default function RegisterForm() {
   const onError = (formErrors: FieldErrors<RegisterValues>) => {
     Object.values(formErrors).forEach((err) => {
       if (err?.message) {
-        toast.error(err.message);
+        toast.error(err.message as string);
       }
     });
   };
