@@ -1,5 +1,5 @@
 import { Response, NextFunction } from "express";
-import { authService } from "../services/auth.service";
+import { authService } from "../container";
 import { AuthRequest } from "../types/auth-request";
 import { GoogleLoginInput } from "../shared/types/auth.types";
 import { HTTP_STATUS } from "../shared/constants/http-status.constants";

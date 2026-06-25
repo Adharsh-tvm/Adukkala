@@ -1,29 +1,24 @@
-import { prisma } from "../prisma/prisma";
+import { IFavoriteRepository } from "../repositories/interfaces/IFavoriteRepository";
 import { CreateFavoriteDto } from "../shared/types/favorite.types";
 import { ApiError } from "../utils/api-error";
 import { HTTP_STATUS } from "../shared/constants/http-status.constants";
 import { MESSAGES } from "../shared/constants/message.constants";
 
-class FavoriteService {
+export class FavoriteService {
+    constructor(private favoriteRepo: IFavoriteRepository) {}
+
     async addFavorite(userId: string, data: CreateFavoriteDto) {
-        const existingFavorite = await prisma.favorite.findFirst({
-            where: {
-                userId,
-                recipeId: data.recipeId
-            }
-        });
+        const existingFavorite = await this.favoriteRepo.findByUserAndRecipe(userId, data.recipeId);
 
         if (existingFavorite) {
             throw new ApiError(HTTP_STATUS.CONFLICT, MESSAGES.FAVORITE.ALREADY_SAVED);
         }
 
-        return prisma.favorite.create({
-            data: {
-                recipeId: data.recipeId,
-                title: data.title,
-                image: data.image,
-                userId
-            }
+        return this.favoriteRepo.create({
+            recipeId: data.recipeId,
+            title: data.title,
+            image: data.image,
+            userId,
         });
     }
 
@@ -31,15 +26,8 @@ class FavoriteService {
         const skip = (page - 1) * limit;
 
         const [favorites, total] = await Promise.all([
-            prisma.favorite.findMany({
-                where: { userId },
-                orderBy: { createdAt: "desc" },
-                skip,
-                take: limit,
-            }),
-            prisma.favorite.count({
-                where: { userId },
-            }),
+            this.favoriteRepo.findManyByUser(userId, skip, limit),
+            this.favoriteRepo.countByUser(userId),
         ]);
 
         return {
@@ -52,25 +40,16 @@ class FavoriteService {
     }
 
     async deleteFavorite(userId: string, recipeId: number) {
-        const favorite = await prisma.favorite.findFirst({
-            where: {
-                userId,
-                recipeId
-            }
-        });
+        const favorite = await this.favoriteRepo.findByUserAndRecipe(userId, recipeId);
 
         if (!favorite) {
             throw new ApiError(HTTP_STATUS.NOT_FOUND, MESSAGES.FAVORITE.NOT_FOUND);
         }
 
-        await prisma.favorite.delete({
-            where: { id: favorite.id }
-        });
+        await this.favoriteRepo.deleteById(favorite.id);
 
         return {
-            message: MESSAGES.FAVORITE.REMOVE_SUCCESS
+            message: MESSAGES.FAVORITE.REMOVE_SUCCESS,
         };
     }
 }
-
-export const favoriteService = new FavoriteService();

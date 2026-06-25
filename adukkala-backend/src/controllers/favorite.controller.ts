@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import { favoriteService } from "../services/favorite.service";
+import { favoriteService } from "../container";
 import { AuthRequest } from "../types/auth-request";
 import { HTTP_STATUS } from "../shared/constants/http-status.constants";
 import { MESSAGES } from "../shared/constants/message.constants";

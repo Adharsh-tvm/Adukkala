@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import { recipeService } from "../services/recipe.service";
+import { recipeService } from "../container";
 import { AuthRequest } from "../types/auth-request";
 import { HTTP_STATUS } from "../shared/constants/http-status.constants";
 import { MESSAGES } from "../shared/constants/message.constants";
