@@ -1,5 +1,6 @@
 import { IRecipeRepository, RecipeItem } from "../repositories/interfaces/IRecipeRepository";
 import { SearchRecipeResponseDto, RecipeDetailResponseDto } from "../dtos/recipe.dto";
+import { RecipeMapper } from "../mappers/recipe.mapper";
 import { ApiError } from "../utils/api-error";
 import { HTTP_STATUS } from "../shared/constants/http-status.constants";
 import { MESSAGES } from "../shared/constants/message.constants";
@@ -15,19 +16,7 @@ export class RecipeService implements IRecipeService {
         try {
             const data = await this.recipeRepo.search(query, limit, offset);
 
-            return {
-                recipes: data.results.map((recipe: RecipeItem) => ({
-                    id: recipe.id,
-                    title: recipe.title,
-                    image: recipe.image,
-                    summary: recipe.summary,
-                    readyInMinutes: recipe.readyInMinutes,
-                })),
-                total: data.totalResults,
-                page,
-                limit,
-                totalPages: Math.ceil(data.totalResults / limit),
-            };
+            return RecipeMapper.toSearchRecipeResponseDto(data, page, limit);
         } catch {
             throw new ApiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, MESSAGES.COMMON.SERVER_ERROR);
         }

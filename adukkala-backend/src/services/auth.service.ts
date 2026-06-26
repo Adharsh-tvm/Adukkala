@@ -1,5 +1,6 @@
 import { IUserRepository } from "../repositories/interfaces/IUserRepository";
 import { comparePassword, hashPassword } from "../utils/hash";
+import { AuthMapper } from "../mappers/auth.mapper";
 import { generateToken } from "../utils/jwt";
 import { ApiError } from "../utils/api-error";
 import { GoogleLoginDto, RegisterDto, LoginDto, RegisterResponseDto, LoginResponseDto, GoogleLoginResponseDto } from "../dtos/auth.dto";
@@ -26,11 +27,7 @@ export class AuthService implements IAuthService {
             password: hashedPassword,
         });
 
-        return {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-        };
+        return AuthMapper.toRegisterResponse(user);
     }
 
     async login(data: LoginDto): Promise<LoginResponseDto> {

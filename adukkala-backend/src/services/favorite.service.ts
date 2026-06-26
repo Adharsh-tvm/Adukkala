@@ -1,5 +1,6 @@
 import { IFavoriteRepository } from "../repositories/interfaces/IFavoriteRepository";
 import { CreateFavoriteDto, FavoriteResponseDto, GetFavoritesResponseDto, DeleteFavoriteResponseDto } from "../dtos/favorite.dto";
+import { FavoriteMapper } from "../mappers/favorite.mapper";
 import { ApiError } from "../utils/api-error";
 import { HTTP_STATUS } from "../shared/constants/http-status.constants";
 import { MESSAGES } from "../shared/constants/message.constants";
@@ -16,12 +17,14 @@ export class FavoriteService implements IFavoriteService {
             throw new ApiError(HTTP_STATUS.CONFLICT, MESSAGES.FAVORITE.ALREADY_SAVED);
         }
 
-        return this.favoriteRepo.create({
+        const favorite = await this.favoriteRepo.create({
             recipeId: data.recipeId,
             title: data.title,
             image: data.image,
             userId,
         });
+
+        return FavoriteMapper.toFavoriteResponseDto(favorite);
     }
 
     async getFavorites(userId: string, page: number = 1, limit: number = 12): Promise<GetFavoritesResponseDto> {
@@ -32,13 +35,7 @@ export class FavoriteService implements IFavoriteService {
             this.favoriteRepo.countByUser(userId),
         ]);
 
-        return {
-            favorites,
-            total,
-            page,
-            limit,
-            totalPages: Math.ceil(total / limit),
-        };
+        return FavoriteMapper.toGetFavoritesResponseDto(favorites, total, page, limit);
     }
 
     async deleteFavorite(userId: string, recipeId: number): Promise<DeleteFavoriteResponseDto> {
