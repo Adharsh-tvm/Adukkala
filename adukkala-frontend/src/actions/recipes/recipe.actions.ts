@@ -3,13 +3,21 @@ import { recipeService } from "@/services/recipe.service";
 export async function searchRecipesAction(
     query: string,
     page: number = 1,
-    limit: number = 12
+    limit: number = 12,
+    diet?: string,
+    cuisine?: string,
+    sort?: string,
+    sortDirection?: string
 ) {
     try {
         return await recipeService.search(
             query,
             page,
-            limit
+            limit,
+            diet,
+            cuisine,
+            sort,
+            sortDirection
         );
     } catch (error) {
         console.error(error);

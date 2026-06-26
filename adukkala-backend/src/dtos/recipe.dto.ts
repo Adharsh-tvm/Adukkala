@@ -2,6 +2,10 @@ export interface SearchRecipeDto {
     query: string;
     page?: number;
     limit?: number;
+    diet?: string;
+    cuisine?: string;
+    sort?: string;
+    sortDirection?: 'asc' | 'desc';
 }
 
 export interface RecipeItemDto {
@@ -21,5 +25,5 @@ export interface SearchRecipeResponseDto {
 }
 
 export interface RecipeDetailResponseDto {
-    [key: string]: any;
+    [key: string]: unknown;
 }

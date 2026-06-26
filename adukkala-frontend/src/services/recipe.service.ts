@@ -6,7 +6,11 @@ export const recipeService = {
     async search(
         query: string,
         page: number = 1,
-        limit: number = 12
+        limit: number = 12,
+        diet?: string,
+        cuisine?: string,
+        sort?: string,
+        sortDirection?: string
     ): Promise<PaginatedRecipes> {
         const { data } = await api.get<{
             success: boolean;
@@ -18,6 +22,10 @@ export const recipeService = {
                     query,
                     page,
                     limit,
+                    diet,
+                    cuisine,
+                    sort,
+                    sortDirection,
                 },
             }
         );

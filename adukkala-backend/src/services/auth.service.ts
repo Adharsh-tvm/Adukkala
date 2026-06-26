@@ -43,7 +43,7 @@ export class AuthService implements IAuthService {
             throw new ApiError(HTTP_STATUS.UNAUTHORIZED, MESSAGES.AUTH.INVALID_CREDENTIALS);
         }
 
-        const token = generateToken(user.id);
+        const token = generateToken(user.id, user.name);
         return { token };
     }
 
@@ -66,7 +66,7 @@ export class AuthService implements IAuthService {
             });
         }
 
-        const token = generateToken(user.id);
+        const token = generateToken(user.id, user.name);
         return { token };
     }
 }

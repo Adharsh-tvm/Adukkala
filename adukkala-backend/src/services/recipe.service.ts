@@ -10,11 +10,11 @@ import { IRecipeService } from "./interfaces/IRecipeService";
 export class RecipeService implements IRecipeService {
     constructor(private recipeRepo: IRecipeRepository) {}
 
-    async searchRecipes(query: string, page: number = 1, limit: number = 12): Promise<SearchRecipeResponseDto> {
+    async searchRecipes(query: string, page: number = 1, limit: number = 12, filters?: { diet?: string; cuisine?: string; sort?: string; sortDirection?: string }): Promise<SearchRecipeResponseDto> {
         const offset = (page - 1) * limit;
 
         try {
-            const data = await this.recipeRepo.search(query, limit, offset);
+            const data = await this.recipeRepo.search(query, limit, offset, filters);
 
             return RecipeMapper.toSearchRecipeResponseDto(data, page, limit);
         } catch {

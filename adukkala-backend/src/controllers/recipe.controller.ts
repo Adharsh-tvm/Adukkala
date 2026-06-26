@@ -12,7 +12,12 @@ export class RecipeController {
             const query = req.query.query as string;
             const page = Math.max(1, Number(req.query.page) || 1);
             const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 12));
-            const result = await this.recipeService.searchRecipes(query, page, limit);
+            const diet = req.query.diet as string | undefined;
+            const cuisine = req.query.cuisine as string | undefined;
+            const sort = req.query.sort as string | undefined;
+            const sortDirection = req.query.sortDirection as string | undefined;
+            
+            const result = await this.recipeService.searchRecipes(query, page, limit, { diet, cuisine, sort, sortDirection });
 
             res.status(HTTP_STATUS.OK).json(
                 ApiResponse.success(result, MESSAGES.RECIPE.FETCH_SUCCESS)

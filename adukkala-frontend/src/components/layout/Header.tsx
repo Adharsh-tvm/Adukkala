@@ -1,16 +1,26 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { LogOut, X, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { logoutAction } from "@/actions/auth/logout.action";
+import { getUserAction } from "@/actions/auth/get-user.action";
 import { toast } from "sonner";
 
 export default function Header() {
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
+
+  useEffect(() => {
+    getUserAction().then((user) => {
+      if (user?.name) {
+        setUserName(user.name);
+      }
+    });
+  }, []);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -38,7 +48,7 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-9 w-9 rounded-lg bg-primary flex items-center justify-center text-white font-bold animate-pulse">
-              A
+              {userName ? userName.charAt(0).toUpperCase() : "A"}
             </div>
             <span className="text-xl font-bold tracking-tight text-gray-900">
               Adukkala
@@ -69,6 +79,11 @@ export default function Header() {
               {/* <Heart className="h-5 w-5" /> */}
             FAVORITES
             </Link>
+            {userName && (
+              <span className="text-sm font-medium text-gray-700 hidden sm:block mr-2">
+                Hello, {userName.split(' ')[0]}
+              </span>
+            )}
             <button
               onClick={() => setShowLogoutModal(true)}
               disabled={isLoggingOut}

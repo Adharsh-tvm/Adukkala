@@ -12,6 +12,6 @@ export interface RecipeSearchResult {
 }
 
 export interface IRecipeRepository {
-    search(query: string, limit: number, offset: number): Promise<RecipeSearchResult>;
+    search(query: string, limit: number, offset: number, filters?: { diet?: string; cuisine?: string; sort?: string; sortDirection?: string }): Promise<RecipeSearchResult>;
     getById(recipeId: number): Promise<unknown>;
 }
