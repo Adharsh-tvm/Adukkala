@@ -1,13 +1,15 @@
 import { IFavoriteRepository } from "../repositories/interfaces/IFavoriteRepository";
-import { CreateFavoriteDto } from "../shared/types/favorite.types";
+import { CreateFavoriteDto, FavoriteResponseDto, GetFavoritesResponseDto, DeleteFavoriteResponseDto } from "../dtos/favorite.dto";
 import { ApiError } from "../utils/api-error";
 import { HTTP_STATUS } from "../shared/constants/http-status.constants";
 import { MESSAGES } from "../shared/constants/message.constants";
 
-export class FavoriteService {
+import { IFavoriteService } from "./interfaces/IFavoriteService";
+
+export class FavoriteService implements IFavoriteService {
     constructor(private favoriteRepo: IFavoriteRepository) {}
 
-    async addFavorite(userId: string, data: CreateFavoriteDto) {
+    async addFavorite(userId: string, data: CreateFavoriteDto): Promise<FavoriteResponseDto> {
         const existingFavorite = await this.favoriteRepo.findByUserAndRecipe(userId, data.recipeId);
 
         if (existingFavorite) {
@@ -22,7 +24,7 @@ export class FavoriteService {
         });
     }
 
-    async getFavorites(userId: string, page: number = 1, limit: number = 12) {
+    async getFavorites(userId: string, page: number = 1, limit: number = 12): Promise<GetFavoritesResponseDto> {
         const skip = (page - 1) * limit;
 
         const [favorites, total] = await Promise.all([
@@ -39,7 +41,7 @@ export class FavoriteService {
         };
     }
 
-    async deleteFavorite(userId: string, recipeId: number) {
+    async deleteFavorite(userId: string, recipeId: number): Promise<DeleteFavoriteResponseDto> {
         const favorite = await this.favoriteRepo.findByUserAndRecipe(userId, recipeId);
 
         if (!favorite) {

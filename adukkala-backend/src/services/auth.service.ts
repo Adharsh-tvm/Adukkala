@@ -2,15 +2,17 @@ import { IUserRepository } from "../repositories/interfaces/IUserRepository";
 import { comparePassword, hashPassword } from "../utils/hash";
 import { generateToken } from "../utils/jwt";
 import { ApiError } from "../utils/api-error";
-import { GoogleLoginInput, RegisterInput, LoginInput } from "../shared/types/auth.types";
+import { GoogleLoginDto, RegisterDto, LoginDto, RegisterResponseDto, LoginResponseDto, GoogleLoginResponseDto } from "../dtos/auth.dto";
 import { verifyGoogleToken } from "../utils/google-auth";
 import { HTTP_STATUS } from "../shared/constants/http-status.constants";
 import { MESSAGES } from "../shared/constants/message.constants";
 
-export class AuthService {
+import { IAuthService } from "./interfaces/IAuthService";
+
+export class AuthService implements IAuthService {
     constructor(private userRepo: IUserRepository) {}
 
-    async register(data: RegisterInput) {
+    async register(data: RegisterDto): Promise<RegisterResponseDto> {
         const existingUser = await this.userRepo.findByEmail(data.email);
 
         if (existingUser) {
@@ -31,7 +33,7 @@ export class AuthService {
         };
     }
 
-    async login(data: LoginInput) {
+    async login(data: LoginDto): Promise<LoginResponseDto> {
         const user = await this.userRepo.findByEmail(data.email);
 
         if (!user || !user.password) {
@@ -48,7 +50,7 @@ export class AuthService {
         return { token };
     }
 
-    async googleLogin(data: GoogleLoginInput) {
+    async googleLogin(data: GoogleLoginDto): Promise<GoogleLoginResponseDto> {
         const googleUser = await verifyGoogleToken(data.credential);
 
         let user = await this.userRepo.findByEmail(googleUser.email);
